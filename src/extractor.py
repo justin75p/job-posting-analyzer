@@ -1,3 +1,5 @@
+import re
+
 import spacy
 
 KNOWN_SKILLS = [
@@ -54,9 +56,9 @@ def extract_skills(text):
         list of str: Skills found in the job posting e.g. ["Python", "Flask", "AWS"]
     """
     found = []
-
     for skill in KNOWN_SKILLS:
-        if skill.lower() in text.lower():
+        pattern = r'\b' + re.escape(skill) + r'\b'
+        if re.search(pattern, text, re.IGNORECASE):
             found.append(skill)
 
     return found
