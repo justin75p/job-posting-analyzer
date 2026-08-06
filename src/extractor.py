@@ -43,22 +43,21 @@ KNOWN_SKILLS = [
 
 def extract_skills(text):
     """
-    Extracts technical skills from a job posting.
+    Extracts technical skills from text from either job postings or resumes.
 
     Workflow:
-        1. Keyword matching — checks if each skill in KNOWN_SKILLS appears in the text
-        2. LLM fallback — passes text to an LLM to catch any skills missed by keyword matching (TODO)
+        1. Custom spaCy NER model — identifies skills in text (TODO)
+        2. KNOWN_SKILLS keyword matching — catches anything NER missed
+        3. spaCy dependency parsing — classifies each skill as required or preferred (TODO)
+        4. LLM fallback — catches edge cases (TODO)
 
     Parameters:
-        text (str): Raw job posting text
+        text (str): Raw text from either a job posting or a resume.
 
     Returns:
-        list of str: Skills found in the job posting e.g. ["Python", "Flask", "AWS"]
+        dict: {
+            "required": ["Python", "AWS"],
+            "preferred": ["Docker", "React"]
+        }
+    Note: when used on a resume, all skills returned under "required"
     """
-    found = []
-    for skill in KNOWN_SKILLS:
-        pattern = r'\b' + re.escape(skill) + r'\b'
-        if re.search(pattern, text, re.IGNORECASE):
-            found.append(skill)
-
-    return found
